@@ -123,7 +123,69 @@ public class XmlUtil {
 		tm.setCreateTime(String.valueOf(System.currentTimeMillis()/1000));
 		return createXmlTextMessage(tm);
 	}
-	
+	public static String createXmlMediaMessage(String content,String mediaId) {
+		ImageMessage tm = new ImageMessage();
+		String toUserName = XmlUtil.getToUserName(content);
+		String fromUserName = XmlUtil.getFromUserName(content);
+		//tm.setContent(msg);
+		tm.setFromUserName(toUserName);
+		tm.setToUserName(fromUserName);
+		tm.setMsgType("image");
+		tm.setMediaId(mediaId);
+		tm.setCreateTime(String.valueOf(System.currentTimeMillis()/1000));
+		return createXmlMediaMessage(tm);
+	}
+	public static String createXmlMediaMessage(ImageMessage tm) {
+		String xmlContent = "";
+		Document doc = DocumentHelper.createDocument();
+		Element root = DocumentHelper.createElement("xml");
+		Element toUserName = DocumentHelper.createElement("ToUserName");
+		CDATA toUserNameCData = DocumentHelper.createCDATA(tm.getToUserName());
+		toUserName.add(toUserNameCData);
+		root.add(toUserName);
+		doc.add(root);// 只需要执行一次
+		// 依此类推，把其他的元素建好
+
+		Element fromUserName = DocumentHelper.createElement("FromUserName");
+		CDATA fromUserNameCData = DocumentHelper.createCDATA(tm.getFromUserName());
+		fromUserName.add(fromUserNameCData);
+		root.add(fromUserName);
+		//
+		root.add(DocumentHelper.createElement("CreateTime").addText(tm.getCreateTime()));
+		//MsgType
+		//root.add(DocumentHelper.createElement("MsgType").addText(tm.getMsgType()));
+		
+		Element msgType = DocumentHelper.createElement("MsgType");
+		CDATA msgTypeCData = DocumentHelper.createCDATA(tm.getMsgType());
+		msgType.add(msgTypeCData);
+		root.add(msgType);
+		
+		
+		
+		
+		//
+		Element content = DocumentHelper.createElement("MediaId");
+		CDATA contentCData = DocumentHelper.createCDATA(tm.getMediaId());
+		content.add(contentCData);
+		
+		
+		//
+		Element image = DocumentHelper.createElement("Image");
+		image.add(content);
+		root.add(image);
+		try {
+			//把内容写到StringWriter中
+			StringWriter sw = new StringWriter();
+			XMLWriter writer = new XMLWriter(sw,OutputFormat.createPrettyPrint());
+			writer.write(doc);
+			System.out.println(sw.toString());
+			xmlContent = sw.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return xmlContent;
+	}
 	public static ImageMessage getImageMessage(String  content) {
 		ImageMessage im = new ImageMessage();
 		// 使用dom4j来读取内容
