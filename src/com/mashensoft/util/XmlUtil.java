@@ -112,6 +112,17 @@ public class XmlUtil {
 
 		return xmlContent;
 	}
+	public static String createXmlTextMessage(String content,String msg) {
+		TextMessage tm = new TextMessage();
+		String toUserName = XmlUtil.getToUserName(content);
+		String fromUserName = XmlUtil.getFromUserName(content);
+		tm.setContent(msg);
+		tm.setFromUserName(toUserName);
+		tm.setToUserName(fromUserName);
+		tm.setMsgType("text");
+		tm.setCreateTime(String.valueOf(System.currentTimeMillis()/1000));
+		return createXmlTextMessage(tm);
+	}
 	
 	public static ImageMessage getImageMessage(String  content) {
 		ImageMessage im = new ImageMessage();
@@ -146,6 +157,20 @@ public class XmlUtil {
 			e.printStackTrace();
 		}
 		return msgType;
+	}
+	public static String getEvent(String content) {
+		String event = "";
+		try {
+			SAXReader reader = new SAXReader();
+			Document doc = reader.read(new ByteArrayInputStream(content.getBytes()));
+			Element root = doc.getRootElement();
+			if(root.element("Event")!=null) {
+				event = root.element("Event").getStringValue();
+			}
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return event;
 	}
 	public static String getToUserName(String content) {
 		String str = "";
@@ -305,6 +330,20 @@ public class XmlUtil {
 		}
 		
 		return vm;
+	}
+	public static String getTagValue(String content,String tagName) {
+		String event = "";
+		try {
+			SAXReader reader = new SAXReader();
+			Document doc = reader.read(new ByteArrayInputStream(content.getBytes()));
+			Element root = doc.getRootElement();
+			if(root.element(tagName)!=null) {
+				event = root.element(tagName).getStringValue();
+			}
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return event;
 	}
 	
 }
