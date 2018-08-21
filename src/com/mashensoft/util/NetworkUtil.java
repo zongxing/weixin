@@ -1,8 +1,11 @@
 package com.mashensoft.util;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -10,6 +13,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+
 
 
 public class NetworkUtil {
@@ -38,7 +47,9 @@ public class NetworkUtil {
 		}
 		return sb.toString();
 	}
-	public static String updateFile(String weburl,InputStream is) {
+	public static String updateFile(String weburl,InputStream is,String filepath) {
+		File file = new File(filepath);
+		long  filelength =file.length();
 		String boundary = "----------";
 		String end = "\r\n";
 		String twoHyphens = "--";
@@ -51,7 +62,7 @@ public class NetworkUtil {
 			conn.setDoInput(true);
 			conn.setUseCaches(false);
 			conn.setRequestProperty("Connection", "Keep-Alive");
-			conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+			conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary+";filelength="+String.valueOf(filelength));
 			conn.setRequestProperty("Charset", "UTF-8");
 			 StringBuilder sb2 = new StringBuilder();
 			 sb2.append("--"); // 必须多两道线
@@ -109,4 +120,6 @@ public class NetworkUtil {
 		}
 		return sb.toString();
 	}
+	
+	
 }
