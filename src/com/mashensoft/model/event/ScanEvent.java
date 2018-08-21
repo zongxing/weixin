@@ -2,7 +2,6 @@ package com.mashensoft.model.event;
 
 public class ScanEvent extends Event {
 	private String event = "SCAN";
-
 	private String eventKey;
 	private String ticket;
 	public String getEventKey() {

@@ -18,6 +18,7 @@ import com.mashensoft.model.LocationMessage;
 import com.mashensoft.model.TextMessage;
 import com.mashensoft.model.VideoMessage;
 import com.mashensoft.model.VoiceMessage;
+import com.mashensoft.model.event.ClickMenuEvent;
 import com.mashensoft.service.IMessageService;
 import com.mashensoft.service.ImageMessageService;
 import com.mashensoft.service.LinkMessageService;
@@ -26,7 +27,10 @@ import com.mashensoft.service.ShortVideoService;
 import com.mashensoft.service.TextMessageService;
 import com.mashensoft.service.VideoMessageService;
 import com.mashensoft.service.VoiceMessageService;
+import com.mashensoft.service.event.ClickMenuService;
 import com.mashensoft.service.event.IEventService;
+import com.mashensoft.service.event.LocationEventService;
+import com.mashensoft.service.event.ScanEventService;
 import com.mashensoft.service.event.SubscribeEventService;
 import com.mashensoft.util.AccessTokenUtil;
 import com.mashensoft.util.ImageUtil;
@@ -89,6 +93,12 @@ public class Server extends HttpServlet {
 			if(event.equals("subscribe")||event.equals("unsubscribe")) {
 				eventService = new SubscribeEventService();
 				
+			}else if(event.equals("SCAN")) {
+				eventService = new ScanEventService();
+			}else if(event.equals("LOCATION")) {
+				eventService = new LocationEventService();
+			}else if(event.equals("CLICK")||event.equals("VIEW")) {
+				eventService = new ClickMenuService();
 			}
 			xmlContent  = eventService.handleMsg(content);
 			
